@@ -5,23 +5,25 @@
 # using top down design method
 
 import turtle
+from turtle import Turtle, Screen, Shape
 import tkinter as tk #allows GUI
+from tkinter import * 
 from tkinter import messagebox
-from time import sleep
+from time import sleep #delays program when needed
 turtle.colormode(255) #lets colors to be given as 0 ... 255
+
+shape =((5,-20),(0, 0), (0, 10),(10,10),(10,0))
+turtle.register_shape('pencil', shape)
+
+CURSOR_SIZE = 20
+FONT_SIZE = 10
+FONT = ('Arial', FONT_SIZE, 'bold')
 
 def getName():
     global user_name, pet_name
-    #user_name = input("Hi there! What's your name? ")
     user_name = turtle.textinput("Hi there!", "What's your name?")
-    sleep(.50)
-    print("Cool name! ", user_name)
-    sleep(.50)
-    print("Welcome", user_name, "let's meet your turtle")
-    sleep(.50)
-    print("But first ...")
-    sleep(.50)
-    pet_name = turtle.textinput("Please name your turtle: ", "turtle")    
+    messagebox.showinfo("Welcome "+ user_name, "let's meet your turtle")
+    pet_name = turtle.textinput("But first ... ", "name your turtle")    
     return(user_name,pet_name)
 
 def setUpScreen():
@@ -30,6 +32,7 @@ def setUpScreen():
     wn.setup(490,640)
     turtle.title(user_name+"'s turtle")
     wn.bgpic("paper_lined.gif")
+    wn.addshape('paper.gif')
     return wn
 
 def createTurtles():
@@ -46,44 +49,7 @@ def show_turtle(user):
     user.down()
     user.showturtle()
 
-def introduce_turtle():
-    sleep(.50)
-    print('Please meet', pet_name)
-    sleep(.50)
-    print('Ahm ... please meet', pet_name)
-    sleep(.50)
-    print('...')
-    sleep(.50)
-
-def move_Screen(yesNo): #tells user to move the screen
-    while yesNo == '': #while they don't respond
-        yesNo = input('Sorry did you move the screen?, Y or N: ')
-    if yesNo == 'Y' or yesNo == 'y' or yesNo == 'yes': #checks for multiple option
-        print("That's better! Now, meet ", pet_name)
-    else:
-        print("Sorry but you have to move the screen to see ", pet_name, "!")
-
-def next_steps():
-    sleep(.50)
-    print('...')
-    sleep(.50)
-    print(pet_name, "your friend ", user_name, "is trying to say hi")
-    print('Hmm it seems', pet_name, 'is shy')
-    sleep(.50)
-    print("why don't you click on ", pet_name, "to help", pet_name, "say hi")
-    sleep(.50)
-
-def print_slow(): #Prints the text letter by letter like in old fashion games
-    phrase = input("Enter a phrase: ")
-    words = phrase.split()  # ['I', 'need', 'practice']
-    for word in words:
-        sleep(.5)
-        for i in word:
-            print(i, end=" ") #keeps it on the same line
-    return()
-
-#function to have turtle write Hi on click
-def write_Hi(x,y):
+def write_Hi(x,y): #function to have turtle write Hi on click
     hide_turtle(user)
     user.goto(-90,45)
     show_turtle(user)
@@ -111,9 +77,11 @@ def write_Hi(x,y):
     user.forward(45)
     user.back(90)
     hide_turtle(user)
+    messagebox.showinfo("Cute!", "check the terminal!")
 
 def sad_face():
     #face
+    user.speed(3)
     hide_turtle(user)
     user.goto(-30,-50)
     show_turtle(user)
@@ -150,6 +118,7 @@ def sad_face():
 
 def happy_face():
     #face
+    user.speed(3)
     hide_turtle(user)
     user.goto(-30,-50)
     show_turtle(user)
@@ -190,52 +159,144 @@ def draw(x,y):
     user.goto(x,y)
     user.ondrag(draw)
 
+def pencil_shape(x,y): 
+    user.shape('pencil')
+    user.width(3)
+
+
+def normal_turtle(x,y): #function to have turtle write Hi on click
+    user.shape('turtle')
+
 def user_input(yn): 
     while yn == '': #while they don't respond
-        yn = turtle.textinput("Sorry did you want to draw?","Y or N:")
+        yn = input("Sorry did you want to draw?: Y or N: ")
     if yn == 'Y' or yn == 'y' or yn == 'yes': #checks for multiple option
-        print("Great! let's draw! ", pet_name)
+        messagebox.showinfo("Great!", "let's draw")
         user.reset()
         user.clear()
         happy_face()
         user.clear()
     else:
-        print("Aww okay well that's sad but bye I guess ...")
+        messagebox.showinfo("Aww okay well that's sad", "but bye I guess ...")
         user.reset()
         user.clear()
         sad_face()
-        #close screen
+        user.clear()
+        hide_turtle(user)
+        turtle.bye()
+
+def button_color(colorName,xCord,yCord):
+    button = Turtle()
+    button.shape('circle')
+    button.shapesize(2)
+    button.pencolor(colorName)
+    button.fillcolor(colorName)
+    button.penup()
+    button.goto(xCord,yCord)
+    button.onclick(blue_onclick)
+    button.showturtle()
+    return button
+
+def blue_onclick(x,y):
+    user.color('cyan')
+
+def black_onclick(x,y):
+    user.color(0,0,0)
+
+def red_onclick(x,y):
+    user.color('red')
+
+def orange_onclick(x,y):
+    user.color('orange')
+
+def yellow_onclick(x,y):
+    user.color('yellow')
+
+def green_onclick(x,y):
+    user.color('green')
+
+def indigo_onclick(x,y):
+    user.color('indigo')
+
+def violet_onclick(x,y):
+    user.color('violet')
+
+def undo_button_color(colorName,xCord,yCord):
+    button = Turtle()
+    button.shape('square')
+    button.shapesize(1)
+    button.pencolor(colorName)
+    button.fillcolor(colorName)
+    button.penup()
+    button.goto(xCord,yCord)
+    button.write("UNDO!", align='center', font=FONT)
+    button.sety(yCord + CURSOR_SIZE + FONT_SIZE)
+    button.onclick(blue_onclick)
+    button.showturtle()
+    return button
+
+def undo_drawing(x,y):
+    user.undo()
 
 def main():
     welcome_name = getName() #get users name
     win_1 = setUpScreen() #set up screen with user's name in title
     create_pet = createTurtles()
+
     hide_turtle(create_pet)
     turtle.title(user_name+"'s turtle "+pet_name)  #changes title to turtle name
-    introduce_turtle()
     show_turtle(create_pet)
-    print('Hmm it seems the screen is hidden, why not moving it in order to see '+ pet_name)
-    tell_them_to_move = input('Did you move the screen Y or N: ')
-    move_Screen(tell_them_to_move) #tells user to move the screen
-    next_steps() #message explaining next steps
+
+    messagebox.showinfo("Hmm it seems " + pet_name + " is shy", "why don't you click on " + pet_name + " to help")
     create_pet.onclick(write_Hi)
-    #create way to make them wait
-    wanna_draw = turtle.textinput("Would you like to draw?", "Y or N: ")
+
+    wanna_draw = input("Would you like to draw? Y or N: ")
     user_input(wanna_draw)
     show_turtle(create_pet)
-    create_pet.onclick(None)
-    #create on click turns into pen
+
+    create_pet.onclick(None) #so it stops writing Hi when clicked 
+    create_pet.onclick(pencil_shape)
+    create_pet.onrelease(normal_turtle)
     create_pet.speed(0)
     create_pet.ondrag(draw)
-    messagebox.showinfo("showinfo", "Information")
-    #let user pick color of turtle
+
     #let user pick color of screen
+    black_button = button_color('black',-140,255)
+    black_button.onclick(black_onclick)
+
+    red_button = button_color('red', -90,255)
+    red_button.onclick(red_onclick)
+
+    orange_button = button_color('orange',-40,255)
+    orange_button.onclick(orange_onclick)
+    
+    yellow_button = button_color('yellow',10,255)
+    yellow_button.onclick(yellow_onclick)
+
+    green_button = button_color('green',60,255)
+    green_button.onclick(green_onclick)
+
+    blue_button = button_color('cyan',110,255)
+    blue_button.onclick(blue_onclick)
+
+    indigo_button = button_color('indigo',160,255)
+    indigo_button.onclick(indigo_onclick)
+
+    violet_button = button_color('violet',205,255)
+    violet_button.onclick(violet_onclick)
+
+    undo_button = undo_button_color('pink',-200,230)
+    undo_button.onclick(undo_drawing)
+
+
+
     #let user right turn to turn turtle, stamp to stamp screen
-    #change color click change color
-    #to finish click done
     #let user save picture
     #let user maybe email?
+
+    
     turtle.done()
+    #root.mainloop()
     win_1.mainloop()
 
 if __name__ == "__main__":
